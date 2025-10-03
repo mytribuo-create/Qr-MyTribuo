@@ -1,30 +1,25 @@
-</head>
-<body>
-  <script>
-    const AS_URL_BASE = "https://script.google.com/macros/s/AKfycbz3hdsu.../exec";
+<script>
+  const AS_URL_BASE = "https://script.google.com/macros/s/AKfycbz3hdsuxWPiFoib1f76Nhb_tKEMwa5W-_YwTo859BLJvn--J3BhwAYkYMXaB6ko3Kq/exec";
 
-    const params = new URLSearchParams(window.location.search);
-    const k = params.get("k");
+  const params = new URLSearchParams(window.location.search);
+  const k = params.get("k"); // lee el valor del parámetro k
 
-    if (k) {
-      fetch(AS_URL_BASE + '?k=' + encodeURIComponent(k))
-        .then(r => r.text())
-        .then(r => {
-          console.log("Respuesta del script:", r);
-          if (r.startsWith("http")) {
-            window.location.replace(r);
-          } else {
-            document.body.innerHTML = "<h2>No se encontró redirección.</h2>";
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          document.body.innerHTML = "<h2>Error de conexión.</h2>";
-        });
-    } else {
-      document.body.innerHTML = "<h2>Falta el parámetro k</h2>";
-    }
-  </script>
-</body>
-
-</html>
+  if (k) {
+    fetch(AS_URL_BASE + '?k=' + encodeURIComponent(k))
+      .then(r => r.text())
+      .then(r => {
+        console.log("Respuesta:", r);
+        if (r && r.startsWith("http")) {
+          window.location.replace(r);
+        } else {
+          document.body.innerHTML = "<h2>No se encontró destino para '" + k + "'</h2>";
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        document.body.innerHTML = "<h2>Error al conectar con Apps Script</h2>";
+      });
+  } else {
+    document.body.innerHTML = "<h2>Falta el parámetro k en la URL</h2>";
+  }
+</script>
