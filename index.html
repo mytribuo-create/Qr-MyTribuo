@@ -1,29 +1,30 @@
 </head>
 <body>
   <script>
-    const AS_URL_BASE = "";
-    const AS_URL_BASE = "https://script.google.com/macros/s/AKfycbz3hdsuxWPiFoib1f76Nhb_tFKEMva5W-_YwTo059BLJVn--J3BhwAYkKMXaB6ko3Kq/exec";
+    const AS_URL_BASE = "https://script.google.com/macros/s/AKfycbz3hdsu.../exec";
 
-    var url = document.location.href;
-    var k = url.substr(url.lastIndexOf("k=")+2);
+    const params = new URLSearchParams(window.location.search);
+    const k = params.get("k");
 
-    if(k){
-      fetch(AS_URL_BASE+'?k='+k)
-      .then(r => r.text())
-      .then((r) => {
-        console.log(r);
-        //document.write(r);
-        if(r){
-          document.location.replace(r);
-        }
-      })
-      .catch(err => console.log(err))
+    if (k) {
+      fetch(AS_URL_BASE + '?k=' + encodeURIComponent(k))
+        .then(r => r.text())
+        .then(r => {
+          console.log("Respuesta del script:", r);
+          if (r.startsWith("http")) {
+            window.location.replace(r);
+          } else {
+            document.body.innerHTML = "<h2>No se encontró redirección.</h2>";
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          document.body.innerHTML = "<h2>Error de conexión.</h2>";
+        });
+    } else {
+      document.body.innerHTML = "<h2>Falta el parámetro k</h2>";
     }
-
   </script>
-
-  <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-
-
 </body>
+
 </html>
