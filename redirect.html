@@ -1,8 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Abriendo Instagram...</title>
+  <title>Abriendo memorial en Instagram...</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      text-align: center; 
+      margin-top: 40vh;
+      color: #333;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #e1306c;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Abriendo memorial en Instagram...</h2>
+  <div id="manualLink"></div>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const username = params.get('username');
@@ -10,17 +33,21 @@
     if (!username) {
       document.body.innerHTML = "<h2>Falta el nombre de usuario.</h2>";
     } else {
-      // Intentar abrir directamente en la app
-      window.location = "https://instagram.com/_u/" + username;
+      const deepLink = "https://instagram.com/_u/" + username;
+      const webLink = "https://www.instagram.com/" + username + "/";
 
-      // Fallback (si no se abre la app en 1s)
+      // Intentar abrir la app
+      window.location.href = deepLink;
+
+      // Después de 2 segundos, mostrar enlace alternativo
       setTimeout(() => {
-        window.location.href = "https://www.instagram.com/" + username + "/";
-      }, 1000);
+        document.getElementById("manualLink").innerHTML = `
+          <p>Si no se abrió automáticamente, toca el botón:</p>
+          <a href="${deepLink}">Abrir en Instagram</a><br><br>
+          <a href="${webLink}">Ver en la web</a>
+        `;
+      }, 2000);
     }
   </script>
-</head>
-<body>
-  <h2>Abriendo memorial en Instagram...</h2>
 </body>
 </html>
