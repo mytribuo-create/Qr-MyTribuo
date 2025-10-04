@@ -1,25 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Redirigiendo...</title>
 <script>
-  const AS_URL_BASE = "https://script.google.com/macros/s/AKfycbygWDajuKzy1ytS4iegMVhSWyRVJ5wxu9iYXUDH3iQvUko5uK2bfpdcbgptvnQ4_7Q/exec";
-
+async function redirigir() {
   const params = new URLSearchParams(window.location.search);
-  const k = params.get("k"); // lee el valor del parámetro k
-
-  if (k) {
-    fetch(AS_URL_BASE + '?k=' + encodeURIComponent(k))
-      .then(r => r.text())
-      .then(r => {
-        console.log("Respuesta:", r);
-        if (r && r.startsWith("http")) {
-          window.location.replace(r);
-        } else {
-          document.body.innerHTML = "<h2>No se encontró destino para '" + k + "'</h2>";
-        }
-      })
-      .catch(err => {
-        console.error("Error:", err);
-        document.body.innerHTML = "<h2>Error al conectar con Apps Script</h2>";
-      });
-  } else {
-    document.body.innerHTML = "<h2>Falta el parámetro k en la URL</h2>";
+  const k = params.get("k");
+  if (!k) {
+    document.body.innerText = "Falta parámetro k";
+    return;
   }
+
+  const endpoint = "https://script.google.com/macros/s/AKfycbwCd1DjVO8xsgSQXl4EgCGvQ6luV15hE7XO32TK5Tmg2NS7qPGQ0yteWy0W1itGdIE/exec" + encodeURIComponent(k);
+  
+  try {
+    const res = await fetch(endpoint);
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      document.body.innerText = data.error || "No se encontró la URL";
+    }
+  } catch (err) {
+    document.body.innerText = "Error al conectar con Apps Script";
+  }
+}
+redirigir();
 </script>
+</head>
+<body>Redirigiendo...</body>
+</html>
