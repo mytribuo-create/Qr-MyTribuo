@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Abriendo Instagram...</title>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get('username');
+    if (!username) {
+      document.body.innerHTML = "<h2>Falta el nombre de usuario.</h2>";
+    } else {
+      // Intentar abrir en app
+      window.location = "instagram://user?username=" + username;
+
+      // Después, fallback al sitio web
+      setTimeout(() => {
+        window.location.href = "https://www.instagram.com/" + username + "/";
+      }, 1000);
+    }
+  </script>
+</head>
+<body>
+  <h2>Abriendo memorial en Instagram...</h2>
+</body>
+</html>
