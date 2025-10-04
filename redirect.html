@@ -6,13 +6,14 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const username = params.get('username');
+
     if (!username) {
       document.body.innerHTML = "<h2>Falta el nombre de usuario.</h2>";
     } else {
-      // Intentar abrir en app
-      window.location = "instagram://user?username=" + username;
+      // Intentar abrir directamente en la app
+      window.location = "https://instagram.com/_u/" + username;
 
-      // Después, fallback al sitio web
+      // Fallback (si no se abre la app en 1s)
       setTimeout(() => {
         window.location.href = "https://www.instagram.com/" + username + "/";
       }, 1000);
