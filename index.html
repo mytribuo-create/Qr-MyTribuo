@@ -1,33 +1,30 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Redirigiendo...</title>
-<script>
-async function redirigir() {
-  const params = new URLSearchParams(window.location.search);
-  const k = params.get("k");
-  if (!k) {
-    document.body.innerText = "Falta parámetro k";
-    return;
-  }
+  <meta charset="UTF-8">
+  <title>Redireccionando...</title>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
 
-  const endpoint = "https://script.google.com/macros/s/AKfycbz3hdsuxWPiFoib1f76Nhb_tFKEMva5W-_YwTo059BLJVn--J3BhwAYkKMXaB6ko3Kq/exec" + encodeURIComponent(k);
-  
-  try {
-    const res = await fetch(endpoint);
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      document.body.innerText = data.error || "No se encontró la URL";
-    }
-  } catch (err) {
-    document.body.innerText = "Error al conectar con Apps Script";
-  }
-}
-redirigir();
-</script>
+    const DATA_URL = "TU_URL_DE_APPS_SCRIPT_AQUI";
+
+    fetch(DATA_URL)
+      .then(r => r.json())
+      .then(rows => {
+        const item = rows.find(r => r.id == id);
+        if (item && item.enlace) {
+          window.location.href = item.enlace;
+        } else {
+          document.body.innerHTML = `<h2>Este memorial aún no ha sido activado.</h2>`;
+        }
+      })
+      .catch(err => {
+        document.body.innerHTML = `<h2>Error al cargar los datos.</h2>`;
+      });
+  </script>
 </head>
-<body>Redirigiendo...</body>
+<body>
+  <h2>Redireccionando...</h2>
+</body>
 </html>
