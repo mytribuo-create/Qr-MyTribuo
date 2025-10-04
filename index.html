@@ -2,29 +2,84 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Redireccionando...</title>
+  <title>Redireccionando memorial...</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      text-align: center; 
+      margin-top: 40vh;
+      color: #333;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #e1306c;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2 id="msg">Cargando memorial...</h2>
+  <div id="manualLink"></div>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
+    const DATA_URL = "TU_URL_DE_APPS_SCRIPT"; // cambia esto por tu URL real
 
-    const DATA_URL = "https://script.google.com/macros/s/AKfycbxRk9Uu2_AMhwY1KRVWA_HeNlWm-b0_A1LUvF3Yg4_YfsXEXnAEQOjSzuVl1sWxnTTpqg/exec";
+    if (!id) {
+      document.body.innerHTML = "<h2>Falta el ID del memorial.</h2>";
+    } else {
+      fetch(DATA_URL)
+        .then(r => r.json())
+        .then(rows => {
+          const item = rows.find(r => r.id == id);
 
-    fetch(DATA_URL)
-      .then(r => r.json())
-      .then(rows => {
-        const item = rows.find(r => r.id == id);
-        if (item && item.enlace) {
-          window.location.href = item.enlace;
-        } else {
-          document.body.innerHTML = `<h2>Este memorial aún no ha sido activado.</h2>`;
-        }
-      })
-      .catch(err => {
-        document.body.innerHTML = `<h2>Error al cargar los datos.</h2>`;
-      });
+          if (!item || !item.enlace) {
+            document.body.innerHTML = "<h2>Este memorial aún no ha sido activado.</h2>";
+            return;
+          }
+
+          const enlace = item.enlace.trim();
+
+          // Si es un enlace de Instagram, usar redirección especial
+          if (enlace.includes("instagram.com")) {
+            const usernameMatch = enlace.match(/instagram\.com\/([A-Za-z0-9_.]+)/);
+            const username = usernameMatch ? usernameMatch[1] : null;
+
+            if (username) {
+              const deepLink = "https://instagram.com/_u/" + username;
+              const webLink = "https://www.instagram.com/" + username + "/";
+
+              // Intentar abrir app
+              window.location.href = deepLink;
+
+              // Fallback visual si no abre
+              setTimeout(() => {
+                document.getElementById("msg").innerText = "Abrir memorial en Instagram:";
+                document.getElementById("manualLink").innerHTML = `
+                  <a href="${deepLink}">Abrir en la app</a><br><br>
+                  <a href="${webLink}">Ver en la web</a>
+                `;
+              }, 2000);
+            } else {
+              document.body.innerHTML = "<h2>No se pudo obtener el perfil de Instagram.</h2>";
+            }
+          } 
+          // Si es otro tipo de enlace, redirigir directo
+          else {
+            window.location.href = enlace;
+          }
+        })
+        .catch(err => {
+          document.body.innerHTML = "<h2>Error al conectar con la base de datos.</h2>";
+          console.error(err);
+        });
+    }
   </script>
-</head>
-<body>
-  <h2>Redireccionando...</h2>
 </body>
 </html>
